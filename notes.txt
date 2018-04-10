@@ -1,0 +1,3 @@
+- import.py and bcp.py scripts are the work of https://github.com/ncvo/charity-commission-extract
+- amend ew_download and fimport to process SIRs data
+- amend ew_download to process other months of the Charity Register
