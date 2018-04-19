@@ -1,0 +1,13 @@
+
+/* Include file containing the global path variables */
+
+global path1 "C:\Users\mcdonndz-local\Desktop\data\ew_charity_data\data_working\"
+global path2 "C:\Users\mcdonndz-local\Desktop\data\ew_charity_data\data_raw\"
+global path3 "C:\Users\mcdonndz-local\Desktop\data\ew_charity_data\data_clean\"
+global path4 "C:\Users\mcdonndz-local\Desktop\github\ew_charity_data\stata\do_files\" 
+global path5 "C:\Users\mcdonndz-local\Desktop\github\ew_charity_data\stata\tables\"
+global path6 "C:\Users\mcdonndz-local\Desktop\github\ew_charity_data\stata\figures\"
+global path7 "C:\Users\mcdonndz-local\Desktop\github\ew_charity_data\stata\findings\"
+global path8 "C:\Users\mcdonndz-local\Desktop\github\ew_charity_data\stata\documents\"
+
+pwd
