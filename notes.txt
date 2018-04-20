@@ -3,6 +3,13 @@ Data analysis and management:
 - New variables for mlogit (e.g. trustees)
 - Clean up Register download to create dataset
 - Model diagnostics
+- I don't know if you thought of it but you can of course transpose the matrix prior to svmat, 
+so you have 1 column with 35 rows, etc
+
+I tend to use results this way, and I would typically stack the results from different models below, 
+e.g. rows 1-35 for model 1, 36-70 for model 2, etc
+Set up that way, you can add extra variables to indicate model and parameter type, 
+then use them as 'by', 'over', and 'if' conditions in graphs, e.g. "graph bar (mean) regres if var_id=1, over(model_id) " , etc
 
 
 Data collection:
