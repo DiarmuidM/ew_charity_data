@@ -7,6 +7,7 @@
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 import requests
+import pandas as pd
 
 ################################# Grab the page #################################
 
@@ -15,6 +16,8 @@ print('>>> Run started') # Header of the output, with the start time.
 print('\r')
 
 webbaddress = 'http://beta.charitycommission.gov.uk/charity-details/?regid=1124004&subid=0'
+ccnum = 1124004
+
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'} # Spoof the user-agent of the request to return the content seen by Chrome.
 rorg = requests.get(webbaddress, headers=headers) # Grab the page using the URL and headers.
 html_org = rorg.text # Get the text elements of the page.
@@ -49,6 +52,17 @@ print(other_trusteeships[0])
 print(other_trusteeships_link[0])
 
 print(len(trustee) == len(other_trusteeships) == len(other_trusteeships_link)) # Validates lists are same length, don't need this in the final code
+
+#Store are JSON
+dicto_json={'ccnum':ccnum, 'Trustee':[trustee], 'Other trusteeships':[other_trusteeships], 'Other trusteeships link': [other_trusteeships_link]} # Store the new variables as a dictionary
+df_json = pd.DataFrame(dicto_json)
+df_json.set_index(['ccnum'], inplace=True)
+df_json.to_json(path_or_buf='Trustee_test_data.json', orient='index')
+
+#Store as CSV
+dicto_csv={'ccnum':ccnum, 'Trustee':trustee, 'Other trusteeships':other_trusteeships, 'Other trusteeships link': other_trusteeships_link} # Store the new variables as a dictionary
+df_csv = pd.DataFrame(dicto_csv)
+df_csv.to_csv(path_or_buf='Trustee_test_data.csv')
 
 print('\r')
 print('>>> Finished')
