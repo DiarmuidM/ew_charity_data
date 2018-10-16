@@ -96,7 +96,7 @@ print(proxies)
 proxy_pool = cycle(proxies)
 
 # Loop through list of charity numbers and scrape info from webpages
-for ccnum in regno_list[0:100]: # use '[:]' option if I want the script to start on a particular row of the dataframe 
+for ccnum in regno_list[0:50]: # use '[:]' option if I want the script to start on a particular row of the dataframe 
  
 	proxy = next(proxy_pool) # Grab a proxy from the pool
 	webadd = 'http://beta.charitycommission.gov.uk/charity-details/?regid=' + str(ccnum) +'&subid=0'
@@ -150,17 +150,34 @@ for ccnum in regno_list[0:100]: # use '[:]' option if I want the script to start
 				print('The script has gotten to line 146')
 				print('\r')
 				print('\r')
+
+				try:
+					otherlinks = soup_org.select("div.trustee-charity-name a")
+					print(otherlinks)
+
+					otherboardlink = []
+					for el in otherlinks:
+						link = el.attr['href']
+						otherboardlink.append(link)
+				except:
+					link = '.'
+					otherboardlink.append(link)
+				other_trusteeships_link.append(otherboardlink)
+
+
+
+				'''
 				for entry in otherboard: # This is grabbing the links and can't use a map function as not every entry has a link, hence the try/except which makes sure a missing character is appended to keep the list the right length
+					print(entry)
 					try:
 						otherboardlink = entry.find(href=True)
 						otherboardlink = otherboardlink.get('href')
+						print(otherboardlink)
 					except:
 						otherboardlink = '.'
 					other_trusteeships_link.append(otherboardlink)
-				
-				print(trustee[0]) # Just print to check it works but these could be turned into a dictionary or striped into a CSV like normal
-				print(other_trusteeships[0])
-				print(other_trusteeships_link[0])
+				'''
+				print(other_trusteeships, other_trusteeships_link)
 
 				print('\r')
 				print('\r')
