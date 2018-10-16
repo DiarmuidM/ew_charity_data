@@ -103,7 +103,7 @@ for el in latest_dlinks:
 
 		# Set working directory to clean data folder
 
-		os.chdir(cleandatapath)
+		os.chdir(rawdatapath)
 		import_zip(file)
 		os.chdir('C:/Users/mcdonndz-local')
 
