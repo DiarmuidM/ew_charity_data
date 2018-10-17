@@ -154,29 +154,19 @@ for ccnum in regno_list[0:50]: # use '[:]' option if I want the script to start 
 				try:
 					otherlinks = soup_org.select("div.trustee-charity-name a")
 					print(otherlinks)
+					print('Line 157')
 
 					otherboardlink = []
 					for el in otherlinks:
 						link = el.attr['href']
 						otherboardlink.append(link)
+						print('Line 163')
 				except:
 					link = '.'
 					otherboardlink.append(link)
+					print('Line 167')
 				other_trusteeships_link.append(otherboardlink)
 
-
-
-				'''
-				for entry in otherboard: # This is grabbing the links and can't use a map function as not every entry has a link, hence the try/except which makes sure a missing character is appended to keep the list the right length
-					print(entry)
-					try:
-						otherboardlink = entry.find(href=True)
-						otherboardlink = otherboardlink.get('href')
-						print(otherboardlink)
-					except:
-						otherboardlink = '.'
-					other_trusteeships_link.append(otherboardlink)
-				'''
 				print(other_trusteeships, other_trusteeships_link)
 
 				print('\r')
