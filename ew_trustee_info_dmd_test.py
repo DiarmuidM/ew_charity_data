@@ -145,28 +145,20 @@ for ccnum in regno_list[0:100]: # use '[:]' option if I want the script to start
 
 				other_trusteeships_link=[] # Initialize list
 
-				print('\r')
-				print('\r')
-				print('The script has gotten to line 146')
-				print('\r')
-				print('\r')
-				for entry in otherboard: # This is grabbing the links and can't use a map function as not every entry has a link, hence the try/except which makes sure a missing character is appended to keep the list the right length
+				for entry in otherboard:
+					print(entry)
 					try:
-						otherboardlink = entry.find(href=True)
-						otherboardlink = otherboardlink.get('href')
+						otherboardlink = []
+						for el in entry:
+							atag = el.find('a', href=True) # Find <a> tags with ['href'] elements
+							link = atag['href'] # Extract the link from ['href']
+							otherboardlink.append(link)
 					except:
-						otherboardlink = '.'
+						link = '.'
+						otherboardlink.append(link)
 					other_trusteeships_link.append(otherboardlink)
-				
-				print(trustee[0]) # Just print to check it works but these could be turned into a dictionary or striped into a CSV like normal
-				print(other_trusteeships[0])
-				print(other_trusteeships_link[0])
 
-				print('\r')
-				print('\r')
-				print('The script has gotten to line 163')
-				print('\r')
-				print('\r')
+				print(trustee, other_trusteeships, other_trusteeships_link)
 
 				# Write to CSV
 				dicto_csv={'ccnum':ccnum,  'FYE': fye, 'charname': charname, 'Trustee':trustee, 'Other trusteeships':other_trusteeships, 'Other trusteeships link': other_trusteeships_link, 'Registered': '1', 'Reason for removal': '.'} # Store the new variables as a dictionary

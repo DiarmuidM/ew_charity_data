@@ -96,7 +96,7 @@ print(proxies)
 proxy_pool = cycle(proxies)
 
 # Loop through list of charity numbers and scrape info from webpages
-for ccnum in regno_list[0:50]: # use '[:]' option if I want the script to start on a particular row of the dataframe 
+for ccnum in regno_list[0:10]: # use '[:]' option if I want the script to start on a particular row of the dataframe 
  
 	proxy = next(proxy_pool) # Grab a proxy from the pool
 	webadd = 'http://beta.charitycommission.gov.uk/charity-details/?regid=' + str(ccnum) +'&subid=0'
@@ -141,7 +141,7 @@ for ccnum in regno_list[0:50]: # use '[:]' option if I want the script to start 
 					ot_text = list(map(lambda x : x.replace('\n',''), ot_text))
 					ot_text = list(map(lambda x : x.replace('\r',''), ot_text))
 					other_trusteeships.append(ot_text)
-				print(other_trusteeships)
+				#print(other_trusteeships)
 
 				other_trusteeships_link=[] # Initialize list
 
@@ -151,34 +151,34 @@ for ccnum in regno_list[0:50]: # use '[:]' option if I want the script to start 
 				print('\r')
 				print('\r')
 
-				try:
-					otherlinks = soup_org.select("div.trustee-charity-name a")
-					print(otherlinks)
-					print('Line 157')
-
-					otherboardlink = []
-					for el in otherlinks:
-						link = el.attr['href']
+				for entry in otherboard:
+					print(entry)
+					try:
+						otherboardlink = []
+						for el in entry:
+							print(type(el))
+							print(el)
+							atag = el.find('a', href=True)
+							print(atag)
+							link = atag['href']
+							print(link)
+							otherboardlink.append(link)
+					except:
+						link = '.'
 						otherboardlink.append(link)
-						print('Line 163')
-				except:
-					link = '.'
-					otherboardlink.append(link)
-					print('Line 167')
-				other_trusteeships_link.append(otherboardlink)
+					other_trusteeships_link.append(otherboardlink)
 
-				print(other_trusteeships, other_trusteeships_link)
-
-				print('\r')
-				print('\r')
-				print('The script has gotten to line 163')
-				print('\r')
-				print('\r')
+				print(trustee, other_trusteeships, other_trusteeships_link)
+				'''
+					The problem with this charity is that the other_trusteeships_link list does not have the same number of elements as the other
+					lists (trustee and other_trusteeships).
+				'''
 
 				# Write to CSV
 				dicto_csv={'ccnum':ccnum,  'FYE': fye, 'charname': charname, 'Trustee':trustee, 'Other trusteeships':other_trusteeships, 'Other trusteeships link': other_trusteeships_link, 'Registered': '1', 'Reason for removal': '.'} # Store the new variables as a dictionary
+				print('Here')
 				df_csv = pd.DataFrame(dicto_csv)
-				print(df_csv)
+				#print(df_csv)
 				with open(outcsv, 'a') as f:
 					df_csv.to_csv(f, header=False)
 			except:
