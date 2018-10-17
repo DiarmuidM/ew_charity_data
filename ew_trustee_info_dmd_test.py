@@ -85,7 +85,7 @@ with open(outcsv, 'a') as f: # Add some code that deletes this file if it exists
 logfilepath = projpath + 'trustte_log_' + ddate + '.csv'
 logfile = open(logfilepath, 'w', newline='')
 logcsv = csv.writer(logfile)
-logcsv.writerow(['timestamp', 'regno', 'url', 'status code'])
+logcsv.writerow(['timestamp', 'regno', 'url', 'status code', 'execution time'])
 
 # Define a counter to track how many rows of the input file the script processes
 counter = 1
@@ -96,8 +96,9 @@ print(proxies)
 proxy_pool = cycle(proxies)
 
 # Loop through list of charity numbers and scrape info from webpages
-for ccnum in regno_list[0:100]: # use '[:]' option if I want the script to start on a particular row of the dataframe 
+for ccnum in regno_list[0:1000]: # use '[:]' option if I want the script to start on a particular row of the dataframe 
  
+	starttime = datetime.now()
 	proxy = next(proxy_pool) # Grab a proxy from the pool
 	webadd = 'http://beta.charitycommission.gov.uk/charity-details/?regid=' + str(ccnum) +'&subid=0'
 
@@ -160,9 +161,18 @@ for ccnum in regno_list[0:100]: # use '[:]' option if I want the script to start
 
 				print(trustee, other_trusteeships, other_trusteeships_link)
 
-				# Write to CSV
-				dicto_csv={'ccnum':ccnum,  'FYE': fye, 'charname': charname, 'Trustee':trustee, 'Other trusteeships':other_trusteeships, 'Other trusteeships link': other_trusteeships_link, 'Registered': '1', 'Reason for removal': '.'} # Store the new variables as a dictionary
-				df_csv = pd.DataFrame(dicto_csv)
+				# Data management #
+
+				# Create variables capturing the number of trustees, number of other trusteeships per trustee, and adjust Row ID to begin at 1 
+
+				# Write to JSON and CSV
+				dicto = {'ccnum':ccnum,  'FYE': fye, 'charname': charname, 'Trustee':trustee, 'Other trusteeships':other_trusteeships, 'Other trusteeships link': other_trusteeships_link, 'Registered': '1', 'Reason for removal': '.'} # Store the new variables as a dictionary
+
+				#df_json = pd.DataFrame(dicto)
+				#df_json.set_index(['ccnum'], inplace=True)
+				#df_json.to_json(path_or_buf='Trustee_test_data_loop.json', orient='index')
+
+				df_csv = pd.DataFrame(dicto)
 				print(df_csv)
 				with open(outcsv, 'a') as f:
 					df_csv.to_csv(f, header=False)
@@ -199,7 +209,9 @@ for ccnum in regno_list[0:100]: # use '[:]' option if I want the script to start
 		print('\r')
 		print(rorg.status_code, '| Could not resolve address of webpage')
 
-	logcsv.writerow([datetime.today().strftime('%Y%m%d %H:%M'), ccnum, webadd, rorg.status_code])
+	# Export results of script to log file
+	runtime = datetime.now() - starttime
+	logcsv.writerow([datetime.today().strftime('%Y%m%d %H:%M'), ccnum, webadd, rorg.status_code, runtime])
 
 print('\r')
 print('>>> Finished')

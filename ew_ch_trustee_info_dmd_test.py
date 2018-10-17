@@ -5,10 +5,8 @@
 
 '''
     The aim of this script:
-        1. Search for the accounts filing history (search_client.filing_history) using company numbers contained in a .csv
-        2. Find the url to the PDF of the accounts
-        3. Execute the urls and store the PDFs in an appropriate directory
-        4. Output success (or failure) of searches to .csv files
+        1. 
+        2. 
 '''
 
 ## 'pip install chwrapper' is run on the command line, not in python
@@ -23,6 +21,7 @@ import pandas as pd
 import os
 import os.path
 import errno
+import numpy as np
 from time import sleep
 from datetime import datetime
 from downloaddate_function import downloaddate
@@ -54,8 +53,8 @@ def downloadappointments(dirid):
 
 # Test the functions #
 
-response = downloaddirectors('01000490') # Valid company number
-print(response.status_code)
+#response = downloaddirectors('01000490') # Valid company number
+#print(response.status_code)
 
 #response = downloaddirectors('12345678') # Invalid company number
 #print(response.status_code) # 404 error and program breaks
@@ -64,9 +63,9 @@ print(response.status_code)
 ############### Main program ################
 
 # Define the project and accounts paths, the file where company numbers will be read from, and an output file to store the results
-rawdatapath = './'
+rawdatapath = 'C:/Users/mcdonndz-local/Desktop/data/ew_charity_data/data_raw'
 projpath = './'
-inputfile = rawdatapath + '/ew_complist_test.csv'
+inputfile = rawdatapath + '/extract_main_charity.csv'
 outcsv_dir = rawdatapath + '/ch_trustee_test_data.csv'
 outcsv_app = rawdatapath + '/ch_appointments_test_data.csv'
 outjson_dir = rawdatapath + '/ch_trustee_test_data.json'
@@ -105,16 +104,26 @@ print('\r')
 
 df = pd.read_csv(inputfile) # skiprows doesn't work as it skips the headers
 df.reset_index(inplace=True) 
+print(df.dtypes)
+df['coyno'] = df['coyno'].fillna('')
 df.set_index(['coyno'], inplace=True) 
+
 coyno_list = df.index.values.tolist()
+print(coyno_list) # List of company numbers
+
 print(df.shape)
+print(df.columns) # List of columns
+print(df.columns[df.isnull().any()]) # List of columns with missing values
 
 requestcount = 0 # Create a counter for tracking how many requests are made to the API
 dir_list = [] # Create a list for storing the results of the API requests
 
 for coyno in coyno_list:
+    print(coyno, '|', type(coyno))
+    coyno = str(coyno)
     #while len(coyno)<8:
         #coyno = '0' + coyno # The missing zero does not seem to be an issue (Company Numbers are meant to be 8 characters long)
+    '''
     if requestcount >=600: # Check if rate limit is exceeded (600 requests per five minute period)
         print('\r')
         print('Program is going to sleep for five minutes')
@@ -152,13 +161,13 @@ for coyno in coyno_list:
 # Export the results to a json file
 with open(outjson_dir, 'w') as f: 
     json.dump(dir_list, f)
+'''
 
-
-sleep(60)
+sleep(320)
 
 ###### Look up appointments of company directors ######
 # officer_role=="director"
-
+'''
 with open(outjson_dir, 'r') as f: 
     directors = json.load(f)
 
@@ -210,3 +219,4 @@ for el in directors:
 # Export the results to a json file
 with open(outjson_app, 'w') as f: 
     json.dump(app_list, f)
+'''    
