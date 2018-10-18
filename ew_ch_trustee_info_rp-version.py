@@ -1,13 +1,9 @@
+#! /usr/bin/python3
+
 #Scrape Trustee details
 #Diarmuid McDonnell
 #11/10/18
 #This file scrapes trustee linking info from the Companies House website.
-
-'''
-    The aim of this script:
-        1. 
-        2. 
-'''
 
 ## 'pip install chwrapper' is run on the command line, not in python
 
@@ -19,6 +15,7 @@ import re
 import requests
 import pandas as pd
 import os
+import dropbox
 import os.path
 import errno
 import numpy as np
@@ -29,13 +26,16 @@ from downloaddate_function import downloaddate
 ddate = downloaddate() # Get today's date
 
 
-##Define the path where my API key is
-tokenpath = "C:/Users/mcdonndz-local/Desktop/admin/chapitoken.txt" # "C:/Users/mcdonndz-local/Desktop/admin/chapitoken.txt"
+##Define the path where my API keys are
+dbtokenpath = '/home/pi/admin/dp_token.txt'
+chtokenpath = '/home/pi/admin/ch_token.txt'
 
-# Open chapitoken.txt in read mode, print to the screen and create an object that stores the API access request
-tokenfile = open(tokenpath, "r")
-chapitoken = tokenfile.read()
-print(chapitoken)
+# Open the api token files in read mode, print to the screen and create an object that stores the API access request
+chtokenfile = open(chtokenpath, "r")
+dbtokenfile = open(dbtokenpath, "r")
+chapitoken = chtokenfile.read()
+dbapitoken = dbtokenfile.read()
+
 search_client = chwrapper.Search(access_token=chapitoken)
 
 # Define a function to search for directors
@@ -100,6 +100,15 @@ counter = 1
 print(' ') # Whitespace used to make the output window more readable
 print('>>> Run started') # Header of the output, with the start time.
 print('\r')
+
+
+# Download latest copy of charity register from the Commission's data portal
+import ew_download
+print('Finished executing ew_download.py')
+print('                                             ')
+print('---------------------------------------------')
+print('                                             ')
+sleep(10)
 
 # Create a panda's dataframe from the CSV #
 

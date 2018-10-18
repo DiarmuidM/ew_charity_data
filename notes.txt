@@ -16,6 +16,8 @@ Data collection:
 	o start the script at a particular row in the dataframe [DONE]
 	o Companies House API search for directors; just export ['items'] key values
 	o deal with financial year end missing data for charities overdue
+	o adjust script to scrape NI and Rep. Ire charity data.
+	o run scrape on Raspberry Pi every month
 
 
 

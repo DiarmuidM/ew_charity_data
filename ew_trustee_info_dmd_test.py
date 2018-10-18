@@ -12,6 +12,8 @@ from datetime import datetime
 from downloaddate_function import downloaddate
 from time import sleep
 import requests
+import glob
+import dropbox
 import pandas as pd
 import csv
 import os
@@ -34,20 +36,21 @@ def get_proxies():
 # Get the current date
 ddate = downloaddate()
 
-# Set paths #
-
-rawdatapath = 'C:/Users/mcdonndz-local/Desktop/data/ew_charity_data'
+# Set paths
+rawdatapath = 'C:/Users/mcdonndz-local/Desktop/data/trustee_data'
 projpath = './'
-inputfile = rawdatapath + '/extract_main_charity.csv'
-outcsv = projpath + '/trustee_test_data.csv'
+ew_inputfile = rawdatapath + '/extract_main_charity.csv'
+ni_inputfile = rawdatapath + '/ni_charity_register.csv
+outcsv = projpath + '/trustee_test_data' + ddate + '.csv'
 
 # Delete output file if already exists
 try:
-    os.remove(outcsv)
+    os.remove(ew_outcsv, ni_outcsv)
 except OSError:
     pass
+
 '''
-# Download latest copy of charity register from the Commission's data portal
+# Download latest copy of EW charity register from the Commission's data portal
 import ew_download
 print('Finished executing ew_download.py')
 print('                                             ')
@@ -56,28 +59,51 @@ print('                                             ')
 sleep(10)
 '''
 
+'''
+# Download latest copy of NI charity register from the Commission's data portal
+import ni_download
+print('Finished executing ew_download.py')
+print('                                             ')
+print('---------------------------------------------')
+print('                                             ')
+sleep(10)
+'''
+
+
 print(' ') # Whitespace used to make the output window more readable
 print('>>> Run started') # Header of the output, with the start time.
 print('\r')
 
-# Create a panda's dataframe from the CSV #
+# Create a panda's dataframe from the England & Wales CSV #
 pd.set_option('precision', 0)
 
 df = pd.read_csv(r'C:/Users/mcdonndz-local/Desktop/data/ew_charity_data/data_raw/extract_main_charity.csv') # skiprows doesn't work as it skips the headers
 print(df.dtypes)
 
 df['regno'] = df['regno'].fillna(0).astype(np.int64) # Remove decimals from regno
-print(df.head(10))
 
 df.reset_index(inplace=True) 
 df.set_index(['regno'], inplace=True) 
 regno_list = df.index.values.tolist()
-print(df.shape)
-#print(regno_list)
+
+# Create a panda's dataframe from the Northern Ireland CSV #
+pd.set_option('precision', 0)
+
+df = pd.read_csv(r'C:/Users/mcdonndz-local/Desktop/data/ew_charity_data/data_raw/extract_main_charity.csv') # skiprows doesn't work as it skips the headers
+print(df.dtypes)
+
+df['regno'] = df['regno'].fillna(0).astype(np.int64) # Remove decimals from regno
+
+df.reset_index(inplace=True) 
+df.set_index(['regno'], inplace=True) 
+regno_list = df.index.values.tolist()
+
 
 varnames_csv = ['Row ID', 'FYE', 'Other Trusteeship', 'Link to Other Trusteeship Charity', 'Reason for Removal', 'Registered', 'Trustee Name', 'Charity Number', 'Charity Name']
 
-with open(outcsv, 'a') as f: # Add some code that deletes this file if it exists
+outcsvlist = [ew_outcsv]
+
+with open(ew_outcsv, 'a') as f: # Add some code that deletes this file if it exists
 	writer = csv.writer(f, varnames_csv)
 	writer.writerow(varnames_csv)
 
@@ -95,14 +121,20 @@ proxies = get_proxies()
 print(proxies) 
 proxy_pool = cycle(proxies)
 
-# Loop through list of charity numbers and scrape info from webpages
-for ccnum in regno_list[0:1000]: # use '[:]' option if I want the script to start on a particular row of the dataframe 
- 
-	starttime = datetime.now()
-	proxy = next(proxy_pool) # Grab a proxy from the pool
-	webadd = 'http://beta.charitycommission.gov.uk/charity-details/?regid=' + str(ccnum) +'&subid=0'
 
+# Loop through list of charity numbers and scrape info from webpages
+for ccnum in regno_list: # use '[:]' option if I want the script to start on a particular row of the dataframe 
+ 
+	starttime = datetime.now() # Track how long it takes to scrape data for each charity
+	proxy = next(proxy_pool) # Grab a proxy from the pool
+
+	webadd = 'http://beta.charitycommission.gov.uk/charity-details/?regid=' + str(ccnum) +'&subid=0'
 	headers = {'http': proxy, 'https': proxy, 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'} # Spoof the user-agent of the request to return the content seen by Chrome.
+	
+	# Define counters to track number of webpage request attempts
+	attempt = 1
+	failures = 0
+
 	rorg = requests.get(webadd, headers=headers) # Grab the page using the URL and headers.
 	print(proxy) # Checks if script is cycling through proxies
 	
@@ -208,6 +240,7 @@ for ccnum in regno_list[0:1000]: # use '[:]' option if I want the script to star
 	else:
 		print('\r')
 		print(rorg.status_code, '| Could not resolve address of webpage')
+		print('Will try at a later date')
 
 	# Export results of script to log file
 	runtime = datetime.now() - starttime
