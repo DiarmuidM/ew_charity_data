@@ -1,11 +1,14 @@
 # Charity Data for England and Wales
 
-* Prof. Alasdair Rutherford - University of Stirling [profile](https://www.stir.ac.uk/people/255778)
-* Dr Diarmuid McDonnell - University of Birmingham [profile](https://diarmuidm.github.io/)
+* Prof. Alasdair Rutherford - University of Stirling [[profile]](https://www.stir.ac.uk/people/255778)
+* Dr Diarmuid McDonnell - University of Birmingham [[profile]](https://diarmuidm.github.io/)
 
 ## Repository
 
-This repository hosts Python syntax for downloading charity data from the Charity Commission for England and Wales, and converting the relational database tables (.bcp) to CSV files.
+This repository hosts Python scripts for downloading charity data from the Charity Commission for England and Wales, and converting the relational database tables (.bcp) to CSV files. The scripts are as follows:
+* ew_download.py - downloads latest copy of the data download and calls on the other two scripts to convert the files to a more open data format (CSV)
+* fimport.py - unzips downloaded files and calls on _bcp.py_
+* bcp.py - converts relational database tables (.bcp) to CSV files
 
 ## Pre-requisites
 
