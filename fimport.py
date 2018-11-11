@@ -1,8 +1,3 @@
-# Script to download monthly extracts of Charity Commission Register of Charities and SIR Financial Information
-# Diarmuid McDonnell
-# Created: 28 March 2018
-# Last edited: Github file history records this
-
 from __future__ import print_function
 import bcp
 import zipfile
